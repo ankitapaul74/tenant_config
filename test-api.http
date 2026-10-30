@@ -1,0 +1,12 @@
+
+### Create a configuration
+POST http://localhost:8080/api/configs
+Content-Type: application/json
+
+{
+  "key": "booking.max.duration",
+  "type": "INTEGER",
+  "defaultValue": 120,
+  "minValue": 1,
+  "maxValue": 240
+}
