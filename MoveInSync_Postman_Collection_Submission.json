@@ -1,0 +1,1054 @@
+{
+  "info": {
+    "_postman_id": "74435a66-d742-41da-8142-e19e20597064",
+    "name": "MoveInSync - Hierarchical Tenant Configuration API Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "33137500",
+    "_collection_link": "https://go.postman.co/collection/33137500-74435a66-d742-41da-8142-e19e20597064?source=collection_link",
+    "description": "Organized Postman collection reconstructed from the user's saved requests and the recorded test workflow. Development credentials are placeholders; set them locally in a Postman environment or collection variables. Requests do not contain saved response examples because the export did not include response history."
+  },
+  "item": [
+    {
+      "name": "01 - Create configuration definition",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"key\": \"booking.max.duration\",\r\n  \"type\": \"INTEGER\",\r\n  \"defaultValue\": 120,\r\n  \"minValue\": 1,\r\n  \"maxValue\": 240\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Creates the INTEGER definition booking.max.duration with default 120 and bounds 1–240. Run before override requests."
+    },
+    {
+      "name": "02 - Create CLIENT override (tenant1)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configKey\": \"booking.max.duration\",\r\n  \"level\": \"CLIENT\",\r\n  \"tenantId\": \"tenant1\",\r\n  \"officeId\": null,\r\n  \"shiftId\": null,\r\n  \"value\": \"100\",\r\n  \"author\": \"admin\",\r\n  \"reason\": \"Client-specific booking limit\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/overrides",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "overrides"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Creates the tenant1 CLIENT-level value 100."
+    },
+    {
+      "name": "03 - Resolve CLIENT configuration",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Checks the resolved tenant1 CLIENT-level value."
+    },
+    {
+      "name": "04 - Explain resolved configuration source",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/explain?configKey=booking.max.duration&tenantId=tenant1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "explain"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Shows the resolved value and source level for tenant1."
+    },
+    {
+      "name": "05 - Get configuration history",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/history?configKey=booking.max.duration",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Reads versioned history for booking.max.duration."
+    },
+    {
+      "name": "06 - Create OFFICE override (BLR_OFFICE_1)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configKey\": \"booking.max.duration\",\r\n  \"level\": \"OFFICE\",\r\n  \"tenantId\": \"tenant1\",\r\n  \"officeId\": \"BLR_OFFICE_1\",\r\n  \"shiftId\": null,\r\n  \"value\": \"90\",\r\n  \"author\": \"admin\",\r\n  \"reason\": \"Office-specific booking limit\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/overrides",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "overrides"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Creates the BLR_OFFICE_1 OFFICE-level override value 90 for tenant1."
+    },
+    {
+      "name": "07 - Resolve OFFICE configuration",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant1&officeId=BLR_OFFICE_1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            },
+            {
+              "key": "officeId",
+              "value": "BLR_OFFICE_1"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Checks OFFICE-level precedence for BLR_OFFICE_1."
+    },
+    {
+      "name": "08 - Create SHIFT override (NIGHT)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configKey\": \"booking.max.duration\",\r\n  \"level\": \"SHIFT\",\r\n  \"tenantId\": \"tenant1\",\r\n  \"officeId\": \"BLR_OFFICE_1\",\r\n  \"shiftId\": \"NIGHT\",\r\n  \"value\": \"80\",\r\n  \"author\": \"admin\",\r\n  \"reason\": \"Night shift booking limit\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/overrides",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "overrides"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Creates the NIGHT SHIFT override value 80."
+    },
+    {
+      "name": "09 - Resolve SHIFT configuration",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant1&officeId=BLR_OFFICE_1&shiftId=NIGHT",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            },
+            {
+              "key": "officeId",
+              "value": "BLR_OFFICE_1"
+            },
+            {
+              "key": "shiftId",
+              "value": "NIGHT"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Checks SHIFT-level precedence for the NIGHT shift."
+    },
+    {
+      "name": "10 - Submit valid atomic change set",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"author\": \"admin\",\r\n  \"reason\": \"Atomic change set test\",\r\n  \"changes\": [\r\n    {\r\n      \"configKey\": \"booking.max.duration\",\r\n      \"level\": \"OFFICE\",\r\n      \"tenantId\": \"tenant1\",\r\n      \"officeId\": \"BLR_OFFICE_1\",\r\n      \"shiftId\": null,\r\n      \"value\": \"85\",\r\n      \"author\": \"admin\",\r\n      \"reason\": \"Atomic change set test\"\r\n    }\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/change-set",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "change-set"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Applies a valid OFFICE change set setting the value to 85."
+    },
+    {
+      "name": "11 - Submit invalid change set (rollback verification)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"author\": \"admin\",\r\n  \"reason\": \"Atomic rollback test\",\r\n  \"changes\": [\r\n    {\r\n      \"configKey\": \"booking.max.duration\",\r\n      \"level\": \"OFFICE\",\r\n      \"tenantId\": \"tenant1\",\r\n      \"officeId\": \"BLR_OFFICE_1\",\r\n      \"shiftId\": null,\r\n      \"value\": \"70\",\r\n      \"author\": \"admin\",\r\n      \"reason\": \"First valid change\"\r\n    },\r\n    {\r\n      \"configKey\": \"booking.max.duration\",\r\n      \"level\": \"OFFICE\",\r\n      \"tenantId\": \"tenant1\",\r\n      \"officeId\": \"BLR_OFFICE_1\",\r\n      \"shiftId\": null,\r\n      \"value\": \"500\",\r\n      \"author\": \"admin\",\r\n      \"reason\": \"Intentionally invalid change\"\r\n    }\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/change-set",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "change-set"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Intentionally includes an invalid value 500 after a valid value 70. Expected validation rejection; follow with request 12 to confirm no partial update."
+    },
+    {
+      "name": "12 - Verify OFFICE value after rejected change set",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant1&officeId=BLR_OFFICE_1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            },
+            {
+              "key": "officeId",
+              "value": "BLR_OFFICE_1"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Confirms the OFFICE value remains 85 after the invalid atomic change set is rejected."
+    },
+    {
+      "name": "13 - Create staged rollout for two offices",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configuration\": {\r\n    \"configKey\": \"booking.max.duration\",\r\n    \"level\": \"GLOBAL\",\r\n    \"tenantId\": null,\r\n    \"officeId\": null,\r\n    \"shiftId\": null,\r\n    \"value\": \"75\",\r\n    \"author\": \"admin\",\r\n    \"reason\": \"Staged rollout test\"\r\n  },\r\n  \"rolloutPercentage\": 100,\r\n  \"officeIds\": [\r\n    \"BLR_OFFICE_1\",\r\n    \"BLR_OFFICE_2\"\r\n  ]\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/staged-rollout",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "staged-rollout"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Creates staged rollout for BLR_OFFICE_1 and BLR_OFFICE_2. The recorded test used rollout ID 6; a fresh run may allocate a different ID."
+    },
+    {
+      "name": "14 - Promote staged rollout globally (rollout ID 6)",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/staged-rollout/6/promote?author=admin&reason=Promoted",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "staged-rollout",
+            "6",
+            "promote"
+          ],
+          "query": [
+            {
+              "key": "author",
+              "value": "admin"
+            },
+            {
+              "key": "reason",
+              "value": "Promoted"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Promotes rollout ID 6. Update the ID to the one returned by request 13 if running against a fresh database."
+    },
+    {
+      "name": "15 - Resolve configuration for tenant2",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant2"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Reads the global/default resolution for tenant2 after promotion; recorded response was 75."
+    },
+    {
+      "name": "16 - Check current configuration version",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/version?since=0",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "version"
+          ],
+          "query": [
+            {
+              "key": "since",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Checks version state since version 0."
+    },
+    {
+      "name": "17 - Review configuration history before rollback",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/history?configKey=booking.max.duration",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Reads change history before rollback."
+    },
+    {
+      "name": "18 - Roll back OFFICE configuration to version 1",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configKey\": \"booking.max.duration\",\r\n  \"level\": \"OFFICE\",\r\n  \"tenantId\": \"tenant1\",\r\n  \"officeId\": \"BLR_OFFICE_1\",\r\n  \"shiftId\": null,\r\n  \"versionNumber\": 1\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/rollback",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "rollback"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Restores the tenant1 / BLR_OFFICE_1 OFFICE override to historical version 1."
+    },
+    {
+      "name": "19 - Verify OFFICE value after rollback",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant1&officeId=BLR_OFFICE_1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            },
+            {
+              "key": "officeId",
+              "value": "BLR_OFFICE_1"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Confirms the OFFICE value after rollback; recorded value was 90."
+    },
+    {
+      "name": "20 - Verify rollback audit history",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/history?configKey=booking.max.duration",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Reads history to confirm rollback created a new audit version."
+    },
+    {
+      "name": "21 - Attempt override as tenant USER (expected 403)",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "tenant1",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Tenant@123",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configKey\": \"booking.max.duration\",\r\n  \"level\": \"CLIENT\",\r\n  \"tenantId\": \"tenant1\",\r\n  \"officeId\": null,\r\n  \"shiftId\": null,\r\n  \"value\": \"110\",\r\n  \"author\": \"tenant1\",\r\n  \"reason\": \"Authorization test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/overrides",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "overrides"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Authorization check: execute with tenant1 USER credentials. Expected HTTP 403 Forbidden."
+    },
+    {
+      "name": "22 - Resolve configuration as tenant1 USER",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "tenant1",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Tenant@123",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Read check as tenant1 USER; user identity should scope the result to tenant1."
+    },
+    {
+      "name": "23 - Resolve configuration without authentication (expected 401)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant1"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "Authentication check: remove Basic Auth and send request. Expected HTTP 401 Unauthorized."
+    },
+    {
+      "name": "24 - Subscribe to SSE events (admin)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "text/event-stream"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/events",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "events"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Opens the SSE event stream using admin credentials. Keep the connection open while sending a change."
+    },
+    {
+      "name": "25 - Publish tenant2 override for SSE event test",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configKey\": \"booking.max.duration\",\r\n  \"level\": \"CLIENT\",\r\n  \"tenantId\": \"tenant2\",\r\n  \"officeId\": null,\r\n  \"shiftId\": null,\r\n  \"value\": \"110\",\r\n  \"author\": \"admin\",\r\n  \"reason\": \"SSE event delivery test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/overrides",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "overrides"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Publishes a tenant2 CLIENT override to trigger an SSE event."
+    },
+    {
+      "name": "26 - Subscribe to SSE events (tenant2)",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "tenant2",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Tenant@123",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/events",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "events"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Opens an SSE stream using tenant2 credentials for tenant-scoped event testing."
+    },
+    {
+      "name": "27 - Publish tenant1 override for tenant-isolation test",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"configKey\": \"booking.max.duration\",\r\n  \"level\": \"CLIENT\",\r\n  \"tenantId\": \"tenant1\",\r\n  \"officeId\": null,\r\n  \"shiftId\": null,\r\n  \"value\": \"115\",\r\n  \"author\": \"admin\",\r\n  \"reason\": \"Tenant isolation test\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/overrides",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "overrides"
+          ]
+        }
+      },
+      "response": [],
+      "description": "Publishes a tenant1 CLIENT override; use while observing tenant-specific SSE behavior."
+    },
+    {
+      "name": "28 - Resolve tenant2 context while authenticated as tenant1",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "tenant1",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Tenant@123",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant2"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "REST tenant-isolation check: authenticate as tenant1 while query includes tenant2. Recorded response resolved tenant1's own value (115)."
+    },
+    {
+      "name": "29 - Resolve tenant2 context while authenticated as tenant2",
+      "request": {
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "key": "username",
+              "value": "tenant2",
+              "type": "string"
+            },
+            {
+              "key": "password",
+              "value": "Tenant@123",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/configs/resolve?configKey=booking.max.duration&tenantId=tenant2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "configs",
+            "resolve"
+          ],
+          "query": [
+            {
+              "key": "configKey",
+              "value": "booking.max.duration"
+            },
+            {
+              "key": "tenantId",
+              "value": "tenant2"
+            }
+          ]
+        }
+      },
+      "response": [],
+      "description": "REST tenant-isolation check: authenticate as tenant2 and request tenant2. Recorded response resolved tenant2's value (110)."
+    }
+  ],
+  "auth": {
+    "type": "basic",
+    "basic": [
+      {
+        "key": "username",
+        "value": "{{username}}",
+        "type": "string"
+      },
+      {
+        "key": "password",
+        "value": "{{password}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "username",
+      "value": "admin",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "REPLACE_WITH_LOCAL_ADMIN_PASSWORD",
+      "type": "string"
+    },
+    {
+      "key": "tenant1Username",
+      "value": "tenant1",
+      "type": "string"
+    },
+    {
+      "key": "tenant1Password",
+      "value": "REPLACE_WITH_LOCAL_TENANT1_PASSWORD",
+      "type": "string"
+    },
+    {
+      "key": "tenant2Username",
+      "value": "tenant2",
+      "type": "string"
+    },
+    {
+      "key": "tenant2Password",
+      "value": "REPLACE_WITH_LOCAL_TENANT2_PASSWORD",
+      "type": "string"
+    }
+  ]
+}
